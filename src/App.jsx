@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styled from "styled-components";
+import { motion, useInView, useScroll } from "framer-motion";
 
 import featuredImage from "./assets/img/featured-image.png";
 import post1 from "./assets/img/post-1.png";
@@ -384,12 +385,16 @@ const ResponsiveContainer = styled.div`
 `;
 
 function App() {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true });
+    const { scrollYProgress } = useScroll();
+
     return (
         <div className="App">
             <Container>
                 <ResponsiveContainer>
                     <header>
-                        <div class="headerTop">
+                        <div className="headerTop">
                             <img src={logo} alt="logo" />
                             <nav>
                                 <ul>
@@ -407,15 +412,25 @@ function App() {
                                     </li>
                                 </ul>
                             </nav>
-                            <div class="headerTopButton">
+                            <div className="headerTopButton">
                                 <input type="text" placeholder="Buscar" />
                                 <button type="submit">
                                     <img src={search} />
                                 </button>
                             </div>
                         </div>
-                        <div class="headerHero">
-                            <div class="headerHeroLeft">
+                        <div className="headerHero">
+                            <motion.div
+                                className="headerHeroLeft"
+                                animate={{
+                                    transform: [
+                                        "translateX(-100px)",
+                                        "translateX(0px)",
+                                    ],
+                                    opacity: [0.7, 0.2, 0.4, 1],
+                                }}
+                                transition={{ duration: 1 }}
+                            >
                                 <h1>
                                     Veja o guia definitivo para conquistar seus
                                     objetivos como DEV em 2022
@@ -426,22 +441,50 @@ function App() {
                                     adipiscing neque. Sed volutpat aenean sit
                                     vitae, sed tristique placerat hac.
                                 </p>
-                                <div class="headerHeroLeftButton">
+                                <div className="headerHeroLeftButton">
                                     <a href>
                                         Veja mais
                                         <img src={arrowRight} />
                                     </a>
                                 </div>
-                            </div>
-                            <div class="headerHeroRight">
-                                <img src={featuredImage} alt="" />
+                            </motion.div>
+                            <div className="headerHeroRight">
+                                <motion.img
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 1 }}
+                                    src={featuredImage}
+                                    alt=""
+                                    whileHover={{ scale: 0.9 }}
+                                    whileInView={{ opacity: 1 }}
+                                    viewport={{ once: true }}
+                                />
                             </div>
                         </div>
                     </header>
                     <main>
-                        <div class="mainTop">
-                            <div class="mainTopLeft">
-                                <img src={post1} />
+                        <div className="mainTop">
+                            <motion.div
+                                className="mainTopLeft"
+                                ref={ref}
+                                style={{
+                                    transform: isInView
+                                        ? "none"
+                                        : "translateX(-200px)",
+                                    opacity: isInView ? 1 : 0,
+                                    transition:
+                                        "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
+                                }}
+                            >
+                                <motion.img
+                                    initial={{
+                                        position: "relative",
+                                        right: "250px",
+                                    }}
+                                    animate={{ right: "0px" }}
+                                    transition={{ duration: 1 }}
+                                    src={post1}
+                                />
                                 <p>Janeiro 04, 2022</p>
                                 <h2>10 dicas para conseguir a vaga desejada</h2>
                                 <p>
@@ -450,8 +493,19 @@ function App() {
                                     adipiscing neque. Sed volutpat aenean sit
                                     vitae, sed tristique.
                                 </p>
-                            </div>
-                            <div class="mainTopRight">
+                            </motion.div>
+                            <motion.div
+                                className="mainTopRight"
+                                ref={ref}
+                                style={{
+                                    transform: isInView
+                                        ? "none"
+                                        : "translateX(-200px)",
+                                    opacity: isInView ? 1 : 0,
+                                    transition:
+                                        "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
+                                }}
+                            >
                                 <p>Janeiro 04, 2022</p>
                                 <h2>10 dicas para conseguir a vaga desejada</h2>
                                 <p>
@@ -460,7 +514,7 @@ function App() {
                                     adipiscing neque. Sed volutpat aenean sit
                                     vitae, sed tristique.
                                 </p>
-                                <div class="divBreak"></div>
+                                <div className="divBreak"></div>
                                 <p>Janeiro 04, 2022</p>
                                 <h2>10 dicas para conseguir a vaga desejada</h2>
                                 <p>
@@ -469,9 +523,23 @@ function App() {
                                     adipiscing neque. Sed volutpat aenean sit
                                     vitae, sed tristique.
                                 </p>
-                            </div>
+                            </motion.div>
                         </div>
-                        <div class="mainBottom">
+                        <motion.div
+                            className="mainBottom"
+                            whileInView={{
+                                transform: [
+                                    "translate(200px)",
+                                    "translate(0px)",
+                                ],
+                            }}
+                            transition={{
+                                type: "spring",
+                                damping: 10,
+                                stiffness: 100,
+                                duration: 1,
+                            }}
+                        >
                             <div>
                                 <img src={post2} />
                                 <p>Janeiro 04, 2022</p>
@@ -510,7 +578,7 @@ function App() {
                                     vitae, sed tristique.
                                 </p>
                             </div>
-                        </div>
+                        </motion.div>
                     </main>
                 </ResponsiveContainer>
             </Container>
